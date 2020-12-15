@@ -3,33 +3,36 @@
  */
 
 //Dependencies
-const express = require("express");
-const path = require("path");
-const cors = require("cors");
+const express = require('express')
+const path = require('path')
+const cors = require('cors')
 
 // Custom dependencies
-const environnement = require("./config");
-const helpers = require("./helper");
+const environnement = require('./config')
+const helpers = require('./helper')
 //Configuring the server
-const app = express();
-app.use(express.json({ extended: false }));
-app.use(cors);
+const app = express()
+app.use(express.json({ extended: false }))
+app.use(cors())
+
 //connecting to database
-helpers.connectDB();
+//helpers.connectDB()
 
-// The api endpoint
-const ENDPOINTS = require("./endpoints");
-ENDPOINTS.forEach(endpoint => app.use(endpoint, require(`./api/${endpoint}`)));
+// The api endPoints
+const ENDPOINTS = require('./endPoints')
+ENDPOINTS.forEach(function (endpoint) {
+  app.use('/api/' + endpoint, require(`./endPoints/${endpoint}`))
+})
 
-app.use(express.static("client/build"));
-app.get("*", (req, res) => {
-  return res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
-});
+app.use(express.static('client/build'))
+app.get('*', (req, res) => {
+  return res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+})
 
 //Starting the server
-const PORT = process.env.PORT || environnement.PORT;
+const PORT = process.env.PORT || environnement.PORT
 app.listen(PORT, () =>
   helpers.success(
     `Server in listening in ${environnement.NAME} environment on port ${environnement.PORT}`
   )
-);
+)
